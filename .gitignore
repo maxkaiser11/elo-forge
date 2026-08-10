@@ -1,0 +1,29 @@
+# Environment Variables (Keep API keys secret!)
+.env
+.env.local
+*.env
+
+# Go Binaries & Build Output
+bin/
+*.exe
+*.exe.local
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Generated Local Data Output (JSON timeline & event dumps)
+*.json
+!package.json
+!tsconfig.json
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.swp
+*~
+.DS_Store
+
+# Go Vendor Directory (if using vendor mode)
+# vendor/
