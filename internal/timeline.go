@@ -1,4 +1,4 @@
-package main
+package riot
 
 import (
 	"encoding/json"
@@ -47,7 +47,7 @@ type EventWrapper struct {
 	Data any    `json:"data"`
 }
 
-func parseTimelineEvents(rawEvents []json.RawMessage) ([]EventWrapper, error) {
+func ParseTimelineEvents(rawEvents []json.RawMessage) ([]EventWrapper, error) {
 	var parsedEvents []EventWrapper
 
 	for _, raw := range rawEvents {

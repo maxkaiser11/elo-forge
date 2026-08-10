@@ -8,6 +8,8 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+
+	riot "riotapi/internal"
 )
 
 type Account struct {
@@ -47,7 +49,7 @@ func main() {
 
 	// 3. Fetch Timeline
 	timelineUrl := fmt.Sprintf("https://%s.api.riotgames.com/lol/match/v5/matches/%s/timeline", cfg.Region, lastMatch)
-	timeline, err := fetchRiotData[TimelineResponse](timelineUrl, cfg.RiotAPIKey)
+	timeline, err := fetchRiotData[riot.TimelineResponse](timelineUrl, cfg.RiotAPIKey)
 	if err != nil {
 		log.Fatalf("Failed to fetch timeline: %v", err)
 	}
@@ -59,7 +61,7 @@ func main() {
 	}
 
 	// Parse dynamic event structs (from timeline.go)
-	events, err := parseTimelineEvents(rawEvents)
+	events, err := riot.ParseTimelineEvents(rawEvents)
 	if err != nil {
 		log.Fatalf("Failed to parse events: %v", err)
 	}
@@ -71,9 +73,9 @@ func main() {
 
 	for _, event := range events {
 		switch e := event.Data.(type) {
-		case ItemPurchasedEvent:
+		case riot.ItemPurchasedEvent:
 			fmt.Printf("[Item] Player %d bought item %d at %dms\n", e.ParticipantID, e.ItemID, e.Timestamp)
-		case ChampionKillEvent:
+		case riot.ChampionKillEvent:
 			fmt.Printf("[Kill] Player %d killed Player %d with assists: %v\n", e.KillerID, e.VictimID, e.Assists)
 		}
 	}
