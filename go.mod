@@ -1,4 +1,4 @@
-module riotapi
+module github.com/maxkaiser11/elo-forge
 
 go 1.21.6
 
