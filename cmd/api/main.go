@@ -41,9 +41,13 @@ func main() {
 
 	// 2. Map Participants
 	participantMap, searchedPlayerID := riot.BuildParticipantMap(matchDetails.Info.Participants, account.Puuid)
+	riot.EnrichParticipantsWithRanks(participantMap, func(puuid string) (string, string, int, int, float64, error) {
+		return fetchPlayerRank(cfg, puuid)
+	})
 	if player, ok := participantMap[searchedPlayerID]; ok {
-		fmt.Printf("Searched Player: #%d %s (%s) - %s\n",
-			searchedPlayerID, player.ChampionName, player.RiotIDName, player.Role)
+		fmt.Printf("Searched Player: #%d %s (%s) - %s | Rank: %s %s (%.1f%% WR)\n",
+			searchedPlayerID, player.ChampionName, player.RiotIDName, player.Role,
+			player.Tier, player.Rank, player.Winrate)
 	}
 
 	// 3. Process Timeline & Enrich

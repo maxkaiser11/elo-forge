@@ -2,6 +2,8 @@ package riot
 
 import (
 	"encoding/json"
+	"log"
+	"sync"
 )
 
 // Helper to flatten raw events across all timeline frames
@@ -30,6 +32,9 @@ func EnrichEvents(events []EventWrapper, participantMap map[int]Participant) []m
 			if player, exists := participantMap[e.ParticipantID]; exists {
 				entry["championName"] = player.ChampionName
 				entry["riotIdName"] = player.RiotIDName
+				entry["playerTier"] = player.Tier
+				entry["playerRank"] = player.Rank
+				entry["playerWinrate"] = player.Winrate
 			}
 
 		case ChampionKillEvent:
@@ -74,4 +79,34 @@ func BuildParticipantMap(participants []Participant, targetPuuid string) (map[in
 	}
 
 	return pMap, targetID
+}
+
+func EnrichParticipantsWithRanks(pMap map[int]Participant, fetchRankFunc func(summonerID string) (string, string, int, int, float64, error)) {
+	var wg sync.WaitGroup
+
+	for id, player := range pMap {
+		if player.Puuid == "" {
+			continue
+		}
+
+		wg.Add(1)
+		go func(pID int, puuid string) {
+			defer wg.Done()
+
+			tier, rank, wins, losses, winrate, err := fetchRankFunc(puuid)
+			if err != nil {
+				log.Printf("Warning: rank fetch failed for puuid %s: %v", puuid, err)
+				return
+			}
+			p := pMap[pID]
+			p.Tier = tier
+			p.Rank = rank
+			p.Wins = wins
+			p.Losses = losses
+			p.Winrate = winrate
+			pMap[pID] = p // Update map entry
+		}(id, player.Puuid)
+	}
+
+	wg.Wait()
 }

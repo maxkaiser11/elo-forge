@@ -60,11 +60,26 @@ type MatchInfo struct {
 type Participant struct {
 	ParticipantID int    `json:"participantId"`
 	Puuid         string `json:"puuid"`
+	SummonerID    string `json:"summonerId"`
 	RiotIDName    string `json:"riotIdGameName"`
 	RiotIDTag     string `json:"riotIdTagline"`
 	ChampionName  string `json:"championName"`
 	TeamID        int    `json:"teamId"`
 	Role          string `json:"individualPosition"`
+
+	Tier    string  `json:"tier,omitempty"` // e.g., "DIAMOND"
+	Rank    string  `json:"rank,omitempty"` // e.g., "I"
+	Wins    int     `json:"wins,omitempty"`
+	Losses  int     `json:"losses,omitempty"`
+	Winrate float64 `json:"winrate,omitempty"` // e.g., 54.2
+}
+
+type LeagueEntry struct {
+	QueueType string `json:"queueType"` // RANKED_SOLO_5x5
+	Tier      string `json:"tier"`
+	Rank      string `json:"rank"`
+	Wins      int    `json:"wins"`
+	Losses    int    `json:"losses"`
 }
 
 func ParseTimelineEvents(rawEvents []json.RawMessage) ([]EventWrapper, error) {
