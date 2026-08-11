@@ -23,7 +23,6 @@ type TimelineFrame struct {
 	Timestamp int64             `json:"timestamp"`
 }
 
-// Event structs
 type BaseEvent struct {
 	Type      string `json:"type"`
 	Timestamp int64  `json:"timestamp"`
@@ -43,8 +42,29 @@ type ChampionKillEvent struct {
 }
 
 type EventWrapper struct {
-	Type string `json:"type"`
-	Data any    `json:"data"`
+	Type          string `json:"type"`
+	ParticipantID int    `json:"participantId,omitempty"`
+	ChampionName  string `json:"championName,omitempty"`
+	RiotIDName    string `json:"RiotIdName,omitempty"`
+	Data          any    `json:"data"`
+}
+
+type MatchResponse struct {
+	Info MatchInfo `json:"info"`
+}
+
+type MatchInfo struct {
+	Participants []Participant `json:"participants"`
+}
+
+type Participant struct {
+	ParticipantID int    `json:"participantId"`
+	Puuid         string `json:"puuid"`
+	RiotIDName    string `json:"riotIdGameName"`
+	RiotIDTag     string `json:"riotIdTagline"`
+	ChampionName  string `json:"championName"`
+	TeamID        int    `json:"teamId"`
+	Role          string `json:"individualPosition"`
 }
 
 func ParseTimelineEvents(rawEvents []json.RawMessage) ([]EventWrapper, error) {

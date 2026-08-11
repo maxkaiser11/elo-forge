@@ -10,7 +10,7 @@ type Config struct {
 	RiotAPIKey string
 	Region     string
 	GameName   string
-	TagLine    string
+	Tagline    string
 }
 
 func LoadConfig() (*Config, error) {
@@ -20,13 +20,13 @@ func LoadConfig() (*Config, error) {
 		RiotAPIKey: os.Getenv("RIOT_API_KEY"),
 		Region:     getEnvOrDefault("RIOT_REGION", "europe"),
 		GameName:   os.Getenv("GAME_NAME"),
-		TagLine:    os.Getenv("TAGLINE"),
+		Tagline:    os.Getenv("TAGLINE"),
 	}
 
 	if cfg.RiotAPIKey == "" {
 		return nil, fmt.Errorf("missing required environment variable: RIOT_API_KEY")
 	}
-	if cfg.GameName == "" || cfg.TagLine == "" {
+	if cfg.GameName == "" || cfg.Tagline == "" {
 		return nil, fmt.Errorf("missing required player target variables: GAME_NAME or TAGLINE")
 	}
 
